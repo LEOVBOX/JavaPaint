@@ -17,6 +17,9 @@ public class ShapeToolSettingsWindow extends JDialog {
     private JSlider innerRadiusSlider;
     private JSlider rotationSlider;
     private DrawingPanel drawingPanel;
+    private DocumentListener radiusFieldListener;
+    private DocumentListener innerRadiusFieldListener;
+    private DocumentListener rotationFieldListener;
 
 
     public ShapeToolSettingsWindow(DrawingPanel drawingPanel) {
@@ -25,13 +28,45 @@ public class ShapeToolSettingsWindow extends JDialog {
         initComponents();
     }
 
-    private void initComponents() {
-        setResizable(false);
-        JPanel panel = new JPanel(new GridLayout(5, 2));
-        JLabel radiusLabel = new JLabel("Радиус:");
-        JLabel rotationLabel = new JLabel("Поворот (градусы):");
+    private void initRadiusField() {
+        radiusFieldListener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                int newVal = getRadius();
+                radiusSlider.setValue(newVal);
+            }
 
-        DocumentListener innerRadiusFieldListener = new DocumentListener() {
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                radiusSlider.setValue(getInnerRadius());
+            }
+        };
+
+        radiusField = new JTextField();
+        radiusField.setText(Integer.toString(drawingPanel.getShapeTool().radius));
+    }
+
+    private void initRadiusSlider() {
+        radiusSlider = new JSlider(0, drawingPanel.getHeight(), drawingPanel.getShapeTool().radius);
+        radiusSlider.setPaintTicks(true);
+        radiusSlider.setPaintLabels(true);
+        radiusSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (source.getValueIsAdjusting()) {
+                radiusField.getDocument().removeDocumentListener(radiusFieldListener);
+                radiusField.setText(Integer.toString(source.getValue()));
+                radiusField.getDocument().addDocumentListener(radiusFieldListener);
+            }
+        });
+    }
+
+    private void initInnerRadiusField() {
+        innerRadiusFieldListener = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 int newVal = getInnerRadius();
@@ -48,36 +83,72 @@ public class ShapeToolSettingsWindow extends JDialog {
                 innerRadiusSlider.setValue(getInnerRadius());
             }
         };
-
-        radiusField = new JTextField();
-        radiusSlider = new JSlider();
-
-        radiusField.setText(Integer.toString(drawingPanel.getShapeTool().radius));
-
-        rotationField = new JTextField();
-        rotationField.setText(Integer.toString(drawingPanel.getShapeTool().rotation));
-        rotationSlider = new JSlider();
-
-        innerRadiusSlider = new JSlider(0, 100, drawingPanel.getShapeTool().innerRadius);
-        innerRadiusSlider.setMajorTickSpacing(10);
-        innerRadiusSlider.setMinorTickSpacing(1);
-        innerRadiusSlider.setPaintTicks(true);
-        innerRadiusSlider.setPaintLabels(true);
-        innerRadiusSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if (source.getValueIsAdjusting()) {
-                    innerRadiusField.getDocument().removeDocumentListener(innerRadiusFieldListener);
-                    innerRadiusField.setText(Integer.toString(source.getValue()));
-                    innerRadiusField.getDocument().addDocumentListener(innerRadiusFieldListener);
-                }
-
-            }
-        });
         innerRadiusField = new JTextField();
         innerRadiusField.setText(Integer.toString(drawingPanel.getShapeTool().innerRadius));
         innerRadiusField.getDocument().addDocumentListener(innerRadiusFieldListener);
+    }
+    private void initInnerRadiusSlider() {
+        innerRadiusSlider = new JSlider(0, drawingPanel.getHeight(), drawingPanel.getShapeTool().innerRadius);
+        innerRadiusSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (source.getValueIsAdjusting()) {
+                innerRadiusField.getDocument().removeDocumentListener(innerRadiusFieldListener);
+                innerRadiusField.setText(Integer.toString(source.getValue()));
+                innerRadiusField.getDocument().addDocumentListener(innerRadiusFieldListener);
+            }
+        });
+    }
+
+    private void initRotationField() {
+        rotationFieldListener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                rotationSlider.setValue(getRotation());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                rotationSlider.setValue(getRotation());
+            }
+        };
+        rotationField = new JTextField();
+        rotationField.setText(Integer.toString(drawingPanel.getShapeTool().rotation));
+    }
+
+    private void initRotationSlider() {
+        rotationSlider = new JSlider(0, 360, drawingPanel.getShapeTool().rotation);
+        rotationSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (source.getValueIsAdjusting()) {
+                rotationField.getDocument().removeDocumentListener(rotationFieldListener);
+                rotationField.setText(Integer.toString(source.getValue()));
+                rotationField.getDocument().addDocumentListener(rotationFieldListener);
+            }
+        });
+    }
+
+
+
+    private void initComponents() {
+        setResizable(false);
+        JPanel panel = new JPanel(new GridLayout(5, 2));
+        JLabel radiusLabel = new JLabel("Радиус:");
+        JLabel rotationLabel = new JLabel("Поворот (градусы):");
+
+        initRadiusField();
+        initRadiusSlider();
+
+        initInnerRadiusField();
+        initInnerRadiusSlider();
+
+        initRotationField();
+        initRotationSlider();
+
 
         JLabel anglesCountLabel = new JLabel("Количество углов:");
         JLabel innerRadiusLabel = new JLabel("Внутренний радиус:");

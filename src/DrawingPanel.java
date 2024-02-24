@@ -379,7 +379,6 @@ public class DrawingPanel extends JPanel implements MouseListener {
         {
             if (radius > 0) {
                 shapeTool.radius = radius;
-                shapeTool.innerRadius = radius - 20;
             }
             shapeTool.rotation = rotation;
 
