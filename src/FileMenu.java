@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.io.File;
 
 public class FileMenu extends JMenu {
     public FileMenu(DrawingPanel drawingPanel) {
@@ -8,11 +7,13 @@ public class FileMenu extends JMenu {
         JMenuItem newFile = new JMenuItem("new");
 
         JMenuItem openFile = new JMenuItem("open");
+        openFile.addActionListener(e->drawingPanel.openFile());
 
         JMenuItem saveAs = new JMenuItem("save as");
+        saveAs.addActionListener(e->drawingPanel.saveFileAs());
 
         JMenuItem save = new JMenuItem("save");
-        save.addActionListener(e->drawingPanel.SaveFile());
+        save.addActionListener(e->drawingPanel.saveFile());
 
         add(newFile);
         add(saveAs);

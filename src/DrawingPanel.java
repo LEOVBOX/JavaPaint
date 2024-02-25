@@ -1,9 +1,12 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -21,7 +24,9 @@ public class DrawingPanel extends JPanel implements MouseListener {
     public BufferedImage image;
     private Stack<BufferedImage> undoStack;
     private Graphics2D g2d;
-    private File outputFile = new File("outputfile.png");
+    private File outputFile;
+
+    private JFrame mainWindow;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -29,7 +34,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
         g.drawImage(image, 0, 0, this);
     }
 
-    public DrawingPanel() {
+    public DrawingPanel(JFrame mainWindow) {
+        this.mainWindow = mainWindow;
         setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
         image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -80,14 +86,76 @@ public class DrawingPanel extends JPanel implements MouseListener {
         });
     }
 
-    public void SaveFile() {
-        try {
-            ImageIO.write(image, "png", outputFile);
-            System.out.println("Изображение успешно сохранено в " + outputFile.getAbsolutePath());
-        } catch (IOException e) {
-            System.err.println("Ошибка при сохранении изображения: " + e.getMessage());
+    public void saveFileAs() {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Получаем выбранный файл
+            File selectedFile = fileChooser.getSelectedFile();
+
+            // Сохраняем BufferedImage в выбранный файл
+            if (!selectedFile.getName().toLowerCase().endsWith(".png")) {
+                selectedFile = new File(selectedFile.getAbsolutePath() + ".png");
+            }
+            outputFile = selectedFile;
+            saveFile();
         }
     }
+
+    public void saveFile() {
+        if (outputFile == null) {
+            saveFileAs();
+        }
+        else {
+            try {
+                ImageIO.write(image, "png", outputFile);
+                System.out.println("Изображение успешно сохранено в " + outputFile.getAbsolutePath());
+            } catch (IOException e) {
+                System.err.println("Ошибка при сохранении изображения: " + e.getMessage());
+            }
+        }
+    }
+
+
+    public void openFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Images", "png", "jpeg", "jpg", "gif"));
+        int result = fileChooser.showOpenDialog(DrawingPanel.this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                BufferedImage image = ImageIO.read(selectedFile);
+                if (image != null) {
+                    this.image = image;
+                    int windowWidth, windowHeight;
+                    if (image.getWidth() > mainWindow.getWidth()) {
+                        windowWidth = mainWindow.getWidth() + Math.abs(image.getWidth() - mainWindow.getWidth());
+                    }
+                    else {
+                        windowWidth = mainWindow.getWidth() - Math.abs(mainWindow.getWidth() - image.getWidth());
+                    }
+
+                    if (image.getHeight() > mainWindow.getHeight()) {
+                        windowHeight = mainWindow.getHeight() + Math.abs(image.getHeight() - mainWindow.getHeight());
+                    }
+                    else {
+                        windowHeight = mainWindow.getHeight() - Math.abs(mainWindow.getHeight() - image.getHeight());
+                    }
+                    repaint();
+                    mainWindow.setSize(new Dimension(windowWidth, windowHeight));
+
+                }
+                else {
+                    JOptionPane.showMessageDialog(this, "Failed to load image", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error loading image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+    }
+
 
     public void drawLine(int x1, int y1, int x2, int y2) {
         int x = x1;

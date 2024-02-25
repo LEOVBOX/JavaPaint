@@ -209,11 +209,11 @@ public class MainWindow extends JFrame {
         super("ICGPaint");
         try {
             setPreferredSize(new Dimension(640, 480));
-            setMinimumSize(new Dimension(640, 480));
+            //setMinimumSize(new Dimension(640, 480));
             setLocation(0, 0);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-            DrawingPanel drawingPanel = new DrawingPanel();
+            DrawingPanel drawingPanel = new DrawingPanel(this);
             JScrollPane scrollPane = new JScrollPane(drawingPanel);
             getContentPane().add(scrollPane);
             toolbarInit(drawingPanel);
