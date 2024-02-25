@@ -8,214 +8,6 @@ import java.io.IOException;
 import java.util.Stack;
 
 public class DrawingPanel extends JPanel implements MouseListener {
-
-    class LineTool {
-        int width;
-        int x1, y1;
-
-        boolean isSecondClicked;
-
-        public LineTool() {
-            width = 1;
-            isSecondClicked = false;
-        }
-
-        private void draw() {
-            if (!isSecondClicked) {
-                lineTool.x1 = x;
-                lineTool.y1 = y;
-                isSecondClicked = true;
-            } else {
-                if (lineTool.width != 1) {
-                    Graphics2D g2d = (Graphics2D) image.getGraphics();
-                    g2d.setStroke(new BasicStroke(lineTool.width));
-                    g2d.setColor(currentColor);
-                    g2d.drawLine(lineTool.x1, lineTool.y1, x, y);
-                    repaint();
-                } else {
-                    drawLine(lineTool.x1, lineTool.y1, x, y);
-                }
-                isSecondClicked = false;
-            }
-        }
-    }
-
-    class ShapeTool {
-        enum Shape {POLYGON, STAR}
-
-        Shape currentShape;
-
-        // Polygon radius
-        int radius;
-
-        // Star inner radius
-        int innerRadius;
-
-        // Rotation in degrees
-        int rotation;
-
-        int anglesCount;
-
-        public ShapeTool() {
-            currentShape = Shape.POLYGON;
-            radius = 50;
-            rotation = 0;
-            anglesCount = 4;
-        }
-
-        private void drawPolygon(int x, int y) {
-            double angle = 2 * Math.PI / anglesCount;
-            double rotationRad = Math.toRadians(rotation);
-            int[] xPoints = new int[anglesCount];
-            int[] yPoints = new int[anglesCount];
-
-            for (int i = 0; i < anglesCount; i++) {
-                double rotatedAngle = i * angle + rotationRad;
-                xPoints[i] = (int) (x + radius * Math.cos(rotatedAngle));
-                yPoints[i] = (int) (y + radius * Math.sin(rotatedAngle));
-            }
-
-            // Рисуем линии между вершинами многоугольника
-            for (int i = 0; i < anglesCount; i++) {
-                int x1 = xPoints[i];
-                int y1 = yPoints[i];
-                int x2 = xPoints[(i + 1) % anglesCount];
-                int y2 = yPoints[(i + 1) % anglesCount];
-                drawLine(x1, y1, x2, y2);
-            }
-        }
-
-        private void drawStar(int x, int y) {
-            int[] xCords = new int[anglesCount * 2];
-            int[] yCords = new int[anglesCount * 2];
-
-            // Рассчитываем координаты точек звезды
-            for (int i = 0; i < anglesCount * 2; i++) {
-                if (i % 2 == 0) {
-                    // Большие лучи
-                    xCords[i] = (int) (x + radius * Math.cos(-Math.PI / 2 + rotation / 180.0 * Math.PI + (i * 2 * Math.PI) / (2 * anglesCount)));
-                    yCords[i] = (int) (y + radius * Math.sin(-Math.PI / 2 + rotation / 180.0 * Math.PI + (i * 2 * Math.PI) / (2 * anglesCount)));
-                } else {
-                    // Малые лучи
-                    xCords[i] = (int) (x + innerRadius * Math.cos(-Math.PI / 2 + rotation / 180.0 * Math.PI + (i * 2 * Math.PI) / (2 * anglesCount)));
-                    yCords[i] = (int) (y + innerRadius * Math.sin(-Math.PI / 2 + rotation / 180.0 * Math.PI + (i * 2 * Math.PI) / (2 * anglesCount)));
-                }
-            }
-            for (int i = 0; i < anglesCount * 2 - 1; i++) {
-                drawLine(xCords[i], yCords[i], xCords[i+1], yCords[i+1]);
-            }
-            drawLine(xCords[anglesCount * 2 - 1], yCords[anglesCount * 2 - 1], xCords[0], yCords[0]);
-        }
-        public void draw(int x, int y) {
-            if (currentShape == Shape.POLYGON) {
-                drawPolygon(x, y);
-            }
-            else if (currentShape == Shape.STAR) {
-                drawStar(x, y);
-            }
-        }
-    }
-
-    // Horizontal line width 1px
-    class Span {
-        int xStart, xEnd, y;
-        public Span(int xStart, int xEnd, int y) {
-            this.xStart = xStart;
-            this.y = y;
-            this.xEnd = xEnd;
-
-        }
-    }
-
-    class FillTool {
-        // Seed point
-        int x, y;
-        Stack<Span> SpanStack;
-        int seedColor;
-        BufferedImage image;
-
-        Color newColor;
-
-        public FillTool(int x, int y, BufferedImage image, Color newColor) {
-            this.x = x;
-            this.y = y;
-            SpanStack = new Stack<>();
-            this.image = image;
-            seedColor = image.getRGB(x, y);
-            this.newColor = newColor;
-        }
-
-        public Span findSpan(int x, int y) {
-            if (image.getRGB(x, y) != seedColor) {
-                return null;
-            }
-
-            image.setRGB(x, y, newColor.getRGB());
-            int xStart, xEnd;
-
-            // Finding right edge
-            int cursor = x + 1;
-            while (cursor < image.getWidth() && image.getRGB(cursor, y) == seedColor) {
-                image.setRGB(cursor, y, newColor.getRGB());
-                repaint();
-                cursor ++;
-            }
-
-            xEnd = cursor - 1;
-
-            // Finding left edge
-            cursor = x - 1;
-            while (cursor >= 0 && image.getRGB(cursor, y) == seedColor) {
-                image.setRGB(cursor, y, newColor.getRGB());
-                repaint();
-                cursor --;
-            }
-
-            xStart = cursor + 1;
-
-            return new Span(xStart, xEnd, y);
-        }
-
-        private void findConnectedSpans(Span curSpan, int x, int y) {
-            Span newSpan;
-
-            // Right
-            for (int x_i = x + 1; x_i <= curSpan.xEnd && x_i <= image.getWidth(); x_i++) {
-                newSpan = findSpan(x_i, y);
-                if (newSpan != null) {
-                    SpanStack.push(newSpan);
-                }
-            }
-            // Left
-            for (int x_i = x; x_i >= curSpan.xStart && x_i >= 0; x_i--) {
-                newSpan = findSpan(x_i, y);
-                if (newSpan != null) {
-                    SpanStack.push(newSpan);
-                }
-            }
-        }
-
-        public void fill() {
-            int curX, curY;
-            // Находим первый спан затравки
-            Span curSpan = findSpan(x, y);
-            // Помещаем в стэк
-            SpanStack.push(curSpan);
-            while (!SpanStack.isEmpty()) {
-                // Вытаскиваем спан из стэка
-                curSpan = SpanStack.pop();
-
-                curX = curSpan.xStart;
-                curY = curSpan.y + 1;
-                if (curY < image.getHeight())
-                    findConnectedSpans(curSpan, curX, curY);
-                curY -= 2;
-                if (curY >= 0)
-                    findConnectedSpans(curSpan, curX, curY);
-            }
-        }
-    }
-
     // Variables
     private int x, y;
     private boolean isPressed;
@@ -247,8 +39,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
 
 
         currentColor = Color.BLACK;
-        lineTool = new LineTool();
-        shapeTool = new ShapeTool();
+        lineTool = new LineTool(this);
+        shapeTool = new ShapeTool(this);
 
         // Setting up default tool
         currentTool = Tool.LINE;
@@ -331,7 +123,7 @@ public class DrawingPanel extends JPanel implements MouseListener {
                 }
 
                 int rgb = currentColor.getRGB();
-                if ((x < getWidth()) && (x >= 0) && (y < getHeight()) && (y >= 0))
+                if ((x < image.getWidth()) && (x >= 0) && (y < image.getHeight()) && (y >= 0))
                     image.setRGB(x, y, rgb);
                 repaint();
             }
@@ -346,7 +138,7 @@ public class DrawingPanel extends JPanel implements MouseListener {
                     x += directionX;
                 }
                 int rgb = currentColor.getRGB();
-                if ((x < getWidth()) && (x >= 0) && (y < getHeight()) && (y >= 0))
+                if ((x < image.getWidth()) && (x >= 0) && (y < image.getHeight()) && (y >= 0))
                     image.setRGB(x, y, rgb);
                 repaint();
             }
@@ -360,6 +152,10 @@ public class DrawingPanel extends JPanel implements MouseListener {
 
     public LineTool getLineTool() {
         return lineTool;
+    }
+
+    public Color getCurrentColor() {
+        return currentColor;
     }
 
     public void setCurrentTool(Tool newTool) {
@@ -476,13 +272,13 @@ public class DrawingPanel extends JPanel implements MouseListener {
         if (currentTool == Tool.LINE) {
             if (!lineTool.isSecondClicked)
                 undoStack.push(copyImage(image));
-            lineTool.draw();
+            lineTool.draw(x, y);
         }
         else if (currentTool == Tool.SHAPE) {
             shapeTool.draw(x, y);
         }
         else if (currentTool == Tool.FILL) {
-            fillTool = new FillTool(x, y, image, currentColor);
+            fillTool = new FillTool(x, y, this, currentColor);
             fillTool.fill();
         }
 
