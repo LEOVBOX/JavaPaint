@@ -7,6 +7,8 @@ public class MainWindow extends JFrame {
     private JToggleButton currentColorButton;
     private JToggleButton currentToolButton;
 
+    public JScrollPane scrollPane;
+
     private void onColorButtonPressed(JToggleButton newColorButton) {
         if (currentColorButton != newColorButton) {
             currentColorButton.setSelected(false);
@@ -214,8 +216,8 @@ public class MainWindow extends JFrame {
             setLocation(0, 0);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-            DrawingPanel drawingPanel = new DrawingPanel();
-            JScrollPane scrollPane = new JScrollPane(drawingPanel);
+            DrawingPanel drawingPanel = new DrawingPanel(this);
+            scrollPane = new JScrollPane(drawingPanel);
             getContentPane().add(scrollPane);
             toolbarInit(drawingPanel);
             menuInit(drawingPanel);

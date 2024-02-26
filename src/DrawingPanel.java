@@ -26,6 +26,10 @@ public class DrawingPanel extends JPanel implements MouseListener {
     private Graphics2D g2d;
     private File outputFile;
 
+    private boolean isResizeable;
+
+    private boolean fileOpened;
+    private MainWindow mainWindow;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -33,8 +37,13 @@ public class DrawingPanel extends JPanel implements MouseListener {
         g.drawImage(image, 0, 0, this);
     }
 
-    public DrawingPanel() {
+    public DrawingPanel(MainWindow mainWindow) {
         setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+
+        this.mainWindow = mainWindow;
+        isResizeable = true;
+        fileOpened = false;
+
 
         image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         g2d = image.createGraphics();
@@ -58,11 +67,16 @@ public class DrawingPanel extends JPanel implements MouseListener {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                super.componentResized(e);
-                if (image.getWidth() < getHeight() || image.getWidth() < getWidth())
-                    image = resizeImage(image, getWidth(), getHeight());
-                else
-                    setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+                if (isResizeable) {
+                    super.componentResized(e);
+                    if (image.getWidth() < getHeight() || image.getWidth() < getWidth())
+                        image = resizeImage(image, getWidth(), getHeight());
+                    else
+                        setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+                }
+                if (fileOpened)
+                    isResizeable = false;
+
             }
         });
 
@@ -126,7 +140,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
                 if (image != null) {
                     this.image = image;
                     this.setSize(new Dimension(image.getWidth(), image.getHeight()));
-                    repaint();
+                    this.setMaximumSize(new Dimension(image.getWidth(), getHeight()));
+                    fileOpened = true;
                 }
                 else {
                     JOptionPane.showMessageDialog(this, "Failed to load image", "Error", JOptionPane.ERROR_MESSAGE);
@@ -328,8 +343,11 @@ public class DrawingPanel extends JPanel implements MouseListener {
             shapeTool.draw(x, y);
         }
         else if (currentTool == Tool.FILL) {
-            fillTool = new FillTool(x, y, this, currentColor);
-            fillTool.fill();
+            if ((x >= 0) && (x < image.getWidth()) && (y >= 0) && (y < image.getHeight())) {
+                fillTool = new FillTool(x, y, this, currentColor);
+                fillTool.fill();
+            }
+
         }
 
 
