@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
 
 // Default layout for JFrame = BorderLayout
 public class MainWindow extends JFrame {
@@ -213,7 +214,7 @@ public class MainWindow extends JFrame {
             setLocation(0, 0);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-            DrawingPanel drawingPanel = new DrawingPanel(this);
+            DrawingPanel drawingPanel = new DrawingPanel();
             JScrollPane scrollPane = new JScrollPane(drawingPanel);
             getContentPane().add(scrollPane);
             toolbarInit(drawingPanel);

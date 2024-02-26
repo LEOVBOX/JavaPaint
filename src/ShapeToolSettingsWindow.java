@@ -43,7 +43,7 @@ public class ShapeToolSettingsWindow extends JDialog {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                radiusSlider.setValue(getInnerRadius());
+                radiusSlider.setValue(getRadius());
             }
         };
 
@@ -64,7 +64,6 @@ public class ShapeToolSettingsWindow extends JDialog {
             }
         });
     }
-
     private void initInnerRadiusField() {
         innerRadiusFieldListener = new DocumentListener() {
             @Override
@@ -98,12 +97,12 @@ public class ShapeToolSettingsWindow extends JDialog {
             }
         });
     }
-
     private void initRotationField() {
         rotationFieldListener = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                rotationSlider.setValue(getRotation());
+                int newVal = getRotation();
+                rotationSlider.setValue(newVal);
             }
 
             @Override
@@ -119,7 +118,6 @@ public class ShapeToolSettingsWindow extends JDialog {
         rotationField = new JTextField();
         rotationField.setText(Integer.toString(drawingPanel.getShapeTool().rotation));
     }
-
     private void initRotationSlider() {
         rotationSlider = new JSlider(0, 360, drawingPanel.getShapeTool().rotation);
         rotationSlider.addChangeListener(e -> {

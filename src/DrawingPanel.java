@@ -26,7 +26,6 @@ public class DrawingPanel extends JPanel implements MouseListener {
     private Graphics2D g2d;
     private File outputFile;
 
-    private JFrame mainWindow;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -34,8 +33,7 @@ public class DrawingPanel extends JPanel implements MouseListener {
         g.drawImage(image, 0, 0, this);
     }
 
-    public DrawingPanel(JFrame mainWindow) {
-        this.mainWindow = mainWindow;
+    public DrawingPanel() {
         setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
         image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -127,23 +125,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
                 BufferedImage image = ImageIO.read(selectedFile);
                 if (image != null) {
                     this.image = image;
-                    int windowWidth, windowHeight;
-                    if (image.getWidth() > mainWindow.getWidth()) {
-                        windowWidth = mainWindow.getWidth() + Math.abs(image.getWidth() - mainWindow.getWidth());
-                    }
-                    else {
-                        windowWidth = mainWindow.getWidth() - Math.abs(mainWindow.getWidth() - image.getWidth());
-                    }
-
-                    if (image.getHeight() > mainWindow.getHeight()) {
-                        windowHeight = mainWindow.getHeight() + Math.abs(image.getHeight() - mainWindow.getHeight());
-                    }
-                    else {
-                        windowHeight = mainWindow.getHeight() - Math.abs(mainWindow.getHeight() - image.getHeight());
-                    }
+                    this.setSize(new Dimension(image.getWidth(), image.getHeight()));
                     repaint();
-                    mainWindow.setSize(new Dimension(windowWidth, windowHeight));
-
                 }
                 else {
                     JOptionPane.showMessageDialog(this, "Failed to load image", "Error", JOptionPane.ERROR_MESSAGE);
@@ -179,6 +162,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
             directionY = 0;
         }
 
+        int rgbColor = currentColor.getRGB();
+
 
         if (dx > dy) {
             int err = -dx;
@@ -190,10 +175,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
                     y += directionY;
                 }
 
-                int rgb = currentColor.getRGB();
                 if ((x < image.getWidth()) && (x >= 0) && (y < image.getHeight()) && (y >= 0))
-                    image.setRGB(x, y, rgb);
-                repaint();
+                    image.setRGB(x, y, rgbColor);
             }
         }
         else {
@@ -205,12 +188,11 @@ public class DrawingPanel extends JPanel implements MouseListener {
                     err -= 2*dy;
                     x += directionX;
                 }
-                int rgb = currentColor.getRGB();
                 if ((x < image.getWidth()) && (x >= 0) && (y < image.getHeight()) && (y >= 0))
-                    image.setRGB(x, y, rgb);
-                repaint();
+                    image.setRGB(x, y, rgbColor);
             }
         }
+        repaint();
 
     }
 

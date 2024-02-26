@@ -40,21 +40,19 @@ public class FillTool {
         int cursor = x + 1;
         while (cursor < drawingPanel.image.getWidth() && drawingPanel.image.getRGB(cursor, y) == seedColor) {
             drawingPanel.image.setRGB(cursor, y, newColor.getRGB());
-            drawingPanel.repaint();
             cursor ++;
         }
-
         xEnd = cursor - 1;
 
         // Finding left edge
         cursor = x - 1;
         while (cursor >= 0 && drawingPanel.image.getRGB(cursor, y) == seedColor) {
             drawingPanel.image.setRGB(cursor, y, newColor.getRGB());
-            drawingPanel.repaint();
             cursor --;
         }
 
         xStart = cursor + 1;
+        drawingPanel.repaint();
 
         return new Span(xStart, xEnd, y);
     }

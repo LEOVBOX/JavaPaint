@@ -11,6 +11,7 @@ public class EditMenu extends JMenu {
         cleanMenuButton.addActionListener(e->drawingPanel.clean());
         add(cleanMenuButton);
         JMenuItem toolSettingsButton = new JMenuItem("Tool settings");
+        toolSettingsButton.addActionListener(e->drawingPanel.openSettingsWindow());
         add(toolSettingsButton);
         JMenuItem paletteButton = new JMenuItem("Palette");
         paletteButton.addActionListener(e -> {
