@@ -4,9 +4,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -29,7 +27,6 @@ public class DrawingPanel extends JPanel implements MouseListener {
     private boolean isResizeable;
 
     private boolean fileOpened;
-    private MainWindow mainWindow;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -37,10 +34,9 @@ public class DrawingPanel extends JPanel implements MouseListener {
         g.drawImage(image, 0, 0, this);
     }
 
-    public DrawingPanel(MainWindow mainWindow) {
+    public DrawingPanel() {
         setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
-        this.mainWindow = mainWindow;
         isResizeable = true;
         fileOpened = false;
 
@@ -147,7 +143,6 @@ public class DrawingPanel extends JPanel implements MouseListener {
                     JOptionPane.showMessageDialog(this, "Failed to load image", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error loading image: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -286,7 +281,7 @@ public class DrawingPanel extends JPanel implements MouseListener {
     }
 
     public void undo() {
-        if (!undoStack.isEmpty()) {
+        if (undoStack.size() != 1) {
             image = undoStack.pop();
             g2d = image.createGraphics();
             repaint();

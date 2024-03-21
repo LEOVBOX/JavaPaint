@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
+import java.util.Objects;
 
 // Default layout for JFrame = BorderLayout
 public class MainWindow extends JFrame {
@@ -52,7 +52,7 @@ public class MainWindow extends JFrame {
         // Undo button
         JButton undoButton = new JButton();
         undoButton.addActionListener(e -> drawingPanel.undo());
-        ImageIcon undoButtonIcon = new ImageIcon("src/resources/undoButtonIcon.png");
+        ImageIcon undoButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/undoButtonIcon.png")));
         undoButton.setIcon(undoButtonIcon);
         undoButton.setToolTipText("Undo last action");
         toolBar.add(undoButton);
@@ -60,7 +60,7 @@ public class MainWindow extends JFrame {
         // Clean button
         JButton cleanButton = new JButton();
         cleanButton.addActionListener(e -> drawingPanel.clean());
-        ImageIcon cleanButtonIcon = new ImageIcon("src/resources/deleteIcon.png");
+        ImageIcon cleanButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/deleteIcon.png")));
         cleanButton.setIcon(cleanButtonIcon);
         cleanButton.setToolTipText("Cleaning the work area");
         toolBar.add(cleanButton);
@@ -71,7 +71,7 @@ public class MainWindow extends JFrame {
         JToggleButton lineToolButton = new JToggleButton();
         lineToolButton.addActionListener(e -> drawingPanel.setCurrentTool(DrawingPanel.Tool.LINE));
         lineToolButton.addActionListener(e -> onToolButtonPressed(lineToolButton));
-        ImageIcon lineToolIcon = new ImageIcon("src/resources/lineToolIcon.png");
+        ImageIcon lineToolIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/lineToolIcon.png")));
         lineToolButton.setIcon(lineToolIcon);
         lineToolButton.setToolTipText("Draws a line from two points");
         toolBar.add(lineToolButton);
@@ -80,7 +80,7 @@ public class MainWindow extends JFrame {
         JToggleButton fillToolButton = new JToggleButton();
         fillToolButton.addActionListener(e -> drawingPanel.setCurrentTool(DrawingPanel.Tool.FILL));
         fillToolButton.addActionListener(e -> onToolButtonPressed(fillToolButton));
-        ImageIcon fillToolIcon = new ImageIcon("src/resources/fillToolIcon.png");
+        ImageIcon fillToolIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/fillToolIcon.png")));
         fillToolButton.setIcon(fillToolIcon);
         fillToolButton.setToolTipText("Fills the selected enclosed area");
         toolBar.add(fillToolButton);
@@ -89,7 +89,7 @@ public class MainWindow extends JFrame {
         JToggleButton shapeToolButton = new JToggleButton();
         shapeToolButton.addActionListener(e -> drawingPanel.setCurrentTool(DrawingPanel.Tool.SHAPE));
         shapeToolButton.addActionListener(e -> onToolButtonPressed(shapeToolButton));
-        ImageIcon shapeToolIcon = new ImageIcon("src/resources/shapeToolIcon.png");
+        ImageIcon shapeToolIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/shapeToolIcon.png")));
         shapeToolButton.setIcon(shapeToolIcon);
         shapeToolButton.setToolTipText("Draws a polygon or star");
         toolBar.add(shapeToolButton);
@@ -98,7 +98,7 @@ public class MainWindow extends JFrame {
         JToggleButton penToolButton = new JToggleButton();
         penToolButton.addActionListener(e -> drawingPanel.setCurrentTool(DrawingPanel.Tool.PEN));
         penToolButton.addActionListener(e -> onToolButtonPressed(penToolButton));
-        ImageIcon penToolIcon = new ImageIcon("src/resources/penToolIcon.png");
+        ImageIcon penToolIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/penToolIcon.png")));
         penToolButton.setIcon(penToolIcon);
         penToolButton.setToolTipText("Draws continues line while pressed");
         toolBar.add(penToolButton);
@@ -109,7 +109,7 @@ public class MainWindow extends JFrame {
         JButton toolSettingsButton = new JButton();
         toolSettingsButton.addActionListener(e ->drawingPanel.openSettingsWindow());
 
-        ImageIcon toolSettingsButtonIcon = new ImageIcon("src/resources/settingsIcon.png");
+        ImageIcon toolSettingsButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/settingsIcon.png")));
         toolSettingsButton.setIcon(toolSettingsButtonIcon);
         toolSettingsButton.setToolTipText("Tool settings");
         toolBar.add(toolSettingsButton);
@@ -121,7 +121,7 @@ public class MainWindow extends JFrame {
         blackColorButton.setBackground(Color.BLACK);
         blackColorButton.addActionListener(e -> drawingPanel.setCurrentColor(Color.BLACK));
         blackColorButton.addActionListener(e -> onColorButtonPressed(blackColorButton));
-        ImageIcon blackColorButtonIcon = new ImageIcon("src/resources/blackColorButtonIcon.png");
+        ImageIcon blackColorButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/blackColorButtonIcon.png")));
         blackColorButton.setIcon(blackColorButtonIcon);
         blackColorButton.setToolTipText("Set current color black");
         toolBar.add(blackColorButton);
@@ -130,7 +130,7 @@ public class MainWindow extends JFrame {
         JToggleButton redColorButton = new JToggleButton();
         redColorButton.addActionListener(e -> drawingPanel.setCurrentColor(Color.RED));
         redColorButton.addActionListener(e -> onColorButtonPressed(redColorButton));
-        ImageIcon redColorButtonIcon = new ImageIcon("src/resources/redColorButtonIcon.png");
+        ImageIcon redColorButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/redColorButtonIcon.png")));
         redColorButton.setIcon(redColorButtonIcon);
         redColorButton.setToolTipText("Set current color red");
         toolBar.add(redColorButton);
@@ -139,7 +139,7 @@ public class MainWindow extends JFrame {
         JToggleButton greenColorButton = new JToggleButton();
         greenColorButton.addActionListener(e -> drawingPanel.setCurrentColor(Color.GREEN));
         greenColorButton.addActionListener(e -> onColorButtonPressed(greenColorButton));
-        ImageIcon greenColorButtonIcon = new ImageIcon("src/resources/greenColorButtonIcon.png");
+        ImageIcon greenColorButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/greenColorButtonIcon.png")));
         greenColorButton.setIcon(greenColorButtonIcon);
         greenColorButton.setToolTipText("Set current color green");
         toolBar.add(greenColorButton);
@@ -148,7 +148,7 @@ public class MainWindow extends JFrame {
         JToggleButton blueColorButton = new JToggleButton();
         blueColorButton.addActionListener(e -> drawingPanel.setCurrentColor(Color.BLUE));
         blueColorButton.addActionListener(e -> onColorButtonPressed(blueColorButton));
-        ImageIcon blueColorButtonIcon = new ImageIcon("src/resources/blueColorButtonIcon.png");
+        ImageIcon blueColorButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/blueColorButtonIcon.png")));
         blueColorButton.setIcon(blueColorButtonIcon);
         blueColorButton.setToolTipText("Set current color blue");
         toolBar.add(blueColorButton);
@@ -157,7 +157,7 @@ public class MainWindow extends JFrame {
         JToggleButton cyanColorButton = new JToggleButton();
         cyanColorButton.addActionListener(e -> drawingPanel.setCurrentColor(Color.CYAN));
         cyanColorButton.addActionListener(e -> onColorButtonPressed(blueColorButton));
-        ImageIcon cyanColorButtonIcon = new ImageIcon("src/resources/cyanColorButtonIcon.png");
+        ImageIcon cyanColorButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/cyanColorButtonIcon.png")));
         cyanColorButton.setIcon(cyanColorButtonIcon);
         cyanColorButton.setToolTipText("Set current color cyan");
         toolBar.add(cyanColorButton);
@@ -166,7 +166,7 @@ public class MainWindow extends JFrame {
         JToggleButton magentaColorButton = new JToggleButton();
         magentaColorButton.addActionListener(e -> drawingPanel.setCurrentColor(Color.MAGENTA));
         magentaColorButton.addActionListener(e -> onColorButtonPressed(magentaColorButton));
-        ImageIcon magentaColorButtonIcon = new ImageIcon("src/resources/magentaColorButtonIcon.png");
+        ImageIcon magentaColorButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/magentaColorButtonIcon.png")));
         magentaColorButton.setIcon(magentaColorButtonIcon);
         magentaColorButton.setToolTipText("Set current color magenta");
         toolBar.add(magentaColorButton);
@@ -175,7 +175,7 @@ public class MainWindow extends JFrame {
         JToggleButton yellowColorButton = new JToggleButton();
         yellowColorButton.addActionListener(e -> drawingPanel.setCurrentColor(Color.YELLOW));
         yellowColorButton.addActionListener(e -> onColorButtonPressed(yellowColorButton));
-        ImageIcon yellowColorButtonIcon = new ImageIcon("src/resources/yellowColorButtonIcon.png");
+        ImageIcon yellowColorButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/yellowColorButtonIcon.png")));
         yellowColorButton.setIcon(yellowColorButtonIcon);
         yellowColorButton.setToolTipText("Set current color yellow");
         toolBar.add(yellowColorButton);
@@ -184,7 +184,7 @@ public class MainWindow extends JFrame {
         JToggleButton whiteColorButton = new JToggleButton();
         whiteColorButton.addActionListener(e -> drawingPanel.setCurrentColor(Color.WHITE));
         whiteColorButton.addActionListener(e -> onColorButtonPressed(whiteColorButton));
-        ImageIcon whiteColorButtonIcon = new ImageIcon("src/resources/whiteColorButtonIcon.png");
+        ImageIcon whiteColorButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/whiteColorButtonIcon.png")));
         whiteColorButton.setIcon(whiteColorButtonIcon);
         whiteColorButton.setToolTipText("Set current color white");
         toolBar.add(whiteColorButton);
@@ -196,7 +196,7 @@ public class MainWindow extends JFrame {
                 drawingPanel.setCurrentColor(selectedColor);
             }
         });
-        ImageIcon paletteButtonIcon = new ImageIcon("src/resources/paletteIcon.png");
+        ImageIcon paletteButtonIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("resources/paletteIcon.png")));
         paletteButton.setIcon(paletteButtonIcon);
         paletteButton.setToolTipText("Open palette for chose current color");
         toolBar.add(paletteButton);
@@ -216,7 +216,7 @@ public class MainWindow extends JFrame {
             setLocation(0, 0);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-            DrawingPanel drawingPanel = new DrawingPanel(this);
+            DrawingPanel drawingPanel = new DrawingPanel();
             scrollPane = new JScrollPane(drawingPanel);
             getContentPane().add(scrollPane);
             toolbarInit(drawingPanel);
