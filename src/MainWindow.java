@@ -28,6 +28,7 @@ public class MainWindow extends JFrame {
             currentToolButton.setSelected(true);
         }
     }
+
     private void menuInit(DrawingPanel drawingPanel) {
         JMenuBar menuBar = new JMenuBar();
         JMenu aboutMenu = new HelpMenu();

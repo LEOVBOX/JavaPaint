@@ -16,11 +16,11 @@ public class DrawingPanel extends JPanel implements MouseListener {
     public enum Tool {LINE, SHAPE, FILL, PEN}
     private Tool currentTool;
     private Color currentColor;
-    private ShapeTool shapeTool;
-    private LineTool lineTool;
+    private final ShapeTool shapeTool;
+    private final LineTool lineTool;
     private FillTool fillTool;
     public BufferedImage image;
-    private Stack<BufferedImage> undoStack;
+    private final Stack<BufferedImage> undoStack;
     private Graphics2D g2d;
     private File outputFile;
 
@@ -117,7 +117,7 @@ public class DrawingPanel extends JPanel implements MouseListener {
         else {
             try {
                 ImageIO.write(image, "png", outputFile);
-                System.out.println("Изображение успешно сохранено в " + outputFile.getAbsolutePath());
+                //System.out.println("Изображение успешно сохранено в " + outputFile.getAbsolutePath());
             } catch (IOException e) {
                 System.err.println("Ошибка при сохранении изображения: " + e.getMessage());
             }
@@ -222,12 +222,12 @@ public class DrawingPanel extends JPanel implements MouseListener {
         if (currentTool == Tool.LINE)
             lineTool.isSecondClicked = false;
         currentTool = newTool;
-        System.out.println("current tool:" + currentTool);
+        //System.out.println("current tool:" + currentTool);
     }
 
     public void setCurrentColor(Color newColor) {
         currentColor = newColor;
-        System.out.println("current color:" + currentColor);
+        //System.out.println("current color:" + currentColor);
     }
 
     public void setShapeToolSettings(int radius, int rotation, int angelsCount, int innerRadius) {
@@ -340,7 +340,8 @@ public class DrawingPanel extends JPanel implements MouseListener {
         else if (currentTool == Tool.FILL) {
             if ((x >= 0) && (x < image.getWidth()) && (y >= 0) && (y < image.getHeight())) {
                 fillTool = new FillTool(x, y, this, currentColor);
-                fillTool.fill();
+                Thread thread = new Thread(() -> fillTool.fill());
+                thread.start();
             }
 
         }
